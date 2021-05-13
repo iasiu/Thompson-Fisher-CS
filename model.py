@@ -1,6 +1,10 @@
 import itertools
 from data import PRINTINFO
 
+class Solution:
+    def createRandom(self):
+        pass
+
 class Factory:
     def __init__(self, jobsData):
         if PRINTINFO:
