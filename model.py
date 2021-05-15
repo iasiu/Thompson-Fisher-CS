@@ -20,13 +20,6 @@ class Factory:
         self.tasksToGive = []
         self.create_tasks()
         self.assign_tasks_to_jobs()
-
-        print("TEST")
-        print(self.jobs[0])
-        print(self.jobs[0].get_task())
-        print(self.jobs[9])
-        print(self.jobs[9].get_task())
-        print(self.jobs[9].get_task())
     
     def create_machines(self):
         for i in range(1, 11):
@@ -51,13 +44,12 @@ class Factory:
                 self.tasksToGive.append(Task(jobId, taskId, operation[0], operation[1]))
         self.jobsData.clear()
     
-    def give_tasks(self):
-        for i, task in enumerate(self.tasksToGive):
+    def give_task(self, task):
+        if task:
             if task.machineId in self.machinesIds:
-                pass
-            else:
-                if PRINTINFO:
-                    print("Machine-{} not found in factory, {} remains in tasksToGive".format(task.machineId, str(task)))
+                return self.machines[task.machineId].add_task(task)
+        else:
+            return None
     
     def add_machine(self, machine):
         machineId = machine.id
@@ -79,11 +71,12 @@ class Machine:
             print("Created {}".format(str(self)))
     
     def add_task(self, task):
-        task.startTime = self.executionTime
+        task.startTime = self.executionTime + task.offset
         self.tasks.append(task)
-        self.executionTime += task.duration
+        self.executionTime = task.startTime + task.duration
         if PRINTINFO:
             print("Added {} to {}, start at-{}".format(str(task), str(self), task.startTime))
+        return task.startTime + task.duration
     
     def add_tasks_list(self, tasksList):
         for task in tasksList:
@@ -96,6 +89,7 @@ class Job:
     def __init__(self, jobId):
         self.id = jobId
         self.taskQueue = []
+        self.currentTime = 0
         if PRINTINFO:
             print("Created {}".format(str(self)))
     
@@ -108,8 +102,12 @@ class Job:
         if PRINTINFO:
             print("Added {}, to {}".format(str(task), str(self)))
     
-    def get_task(self):
-        return self.taskQueue.pop(0)
+    def pop_task(self):
+        if len(self.taskQueue) > 0:
+            task = self.taskQueue.pop(0)
+            return task
+        else:
+            return None
     
     def __str__(self):
         return "Job-{}".format(self.id)
@@ -121,6 +119,7 @@ class Task:
         self.machineId = machineId
         self.duration = duration
         self.startTime = 0
+        self.offset = 0
         if PRINTINFO:
             print("Created {}".format(str(self)))
     

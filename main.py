@@ -1,14 +1,22 @@
 from data import jobsData
 from model import Factory, Machine, Task
-import ffmpeg
 
-import SwarmPackagePy
-from SwarmPackagePy import testFunctions as tf
-from SwarmPackagePy import animation, animation3D
+from random import choice
 
-#f = Factory(jobsData)
 
-alh = SwarmPackagePy.pso(50, tf.easom_function, -10, 10, 2, 20,
-                         w=0.5, c1=1, c2=1)
-animation(alh.get_agents(), tf.easom_function, -10, 10)
-animation3D(alh.get_agents(), tf.easom_function, -10, 10, sr=True)
+f = Factory(jobsData)
+available = list(f.machinesIds)
+
+while True:
+    if len(available) == 0:
+        break
+    chosenId = choice(available)
+    task = f.jobs[chosenId - 1].pop_task()
+    task.offset = f.jobs[chosenId - 1].currentTime
+    jobtime = f.give_task(task)
+    f.jobs[chosenId - 1].currentTime += task.duration
+    if len(f.jobs[chosenId - 1].taskQueue) == 0:
+        available.pop(available.index(chosenId))
+
+maxtime = [m.executionTime for k, m in f.machines.items()]
+print(maxtime)
