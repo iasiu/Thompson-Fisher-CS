@@ -1,10 +1,11 @@
 from model import Factory, Machine, Task
 from random import choice
+import gc
 
 factories = []
 
 def solution():
-    factories.append(Factory())
+    factories = [Factory()]
     available = list(factories[-1].machinesIds)
 
     while True:
@@ -20,9 +21,10 @@ def solution():
 
     return max(times)
     factories.clear()
+    gc.collect()
 
 mintime = 5000
-iterations = 100000
+iterations = 30000000
 for i in range(iterations):
     if i % int(iterations/100) == 0:
         print("{}%".format(int(i/(iterations/100))))
