@@ -9,4 +9,18 @@ jobsData = [[(1, 29), (2, 78), (3, 9), (4, 36), (5, 49), (6, 11), (7, 62), (8, 5
         [(1, 76), (2, 69), (4, 76), (6, 51), (3, 85), (10, 11), (7, 40), (8, 89), (5, 26), (9, 74)],
         [(2, 85), (1, 13), (3, 61), (7, 7), (9, 64), (10, 76), (6, 47), (4, 52), (5, 90), (8, 45)]]
 
-PRINTINFO = True
+jobsMachines = []
+jobsTimes = []
+
+for job in jobsData:
+        tempM = []
+        tempT = []
+        for machine, time in job:
+                tempM.append(machine)
+                tempT.append(time)
+        jobsMachines.append(list(tempM))
+        jobsTimes.append(list(tempT))
+        tempM.clear()
+        tempT.clear()
+
+PRINTINFO = False

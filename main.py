@@ -1,5 +1,4 @@
 from model import Factory, Machine, Task
-
 from random import choice
 
 factories = []
@@ -20,10 +19,15 @@ def solution():
     times = [m.executionTime for k, m in factories[-1].machines.items()]
 
     return max(times)
+    factories.clear()
 
-solutions = []
+mintime = 5000
+iterations = 100000
+for i in range(iterations):
+    if i % int(iterations/100) == 0:
+        print("{}%".format(int(i/(iterations/100))))
+    time = solution()
+    if time < mintime:
+        mintime = time
 
-for i in range(1):
-    solutions.append(solution())
-
-print(min(solutions))
+print(mintime)
