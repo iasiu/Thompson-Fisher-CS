@@ -1,22 +1,29 @@
-from data import jobsData
 from model import Factory, Machine, Task
 
 from random import choice
 
+factories = []
 
-f = Factory(jobsData)
-available = list(f.machinesIds)
+def solution():
+    factories.append(Factory())
+    available = list(factories[-1].machinesIds)
 
-while True:
-    if len(available) == 0:
-        break
-    chosenId = choice(available)
-    task = f.jobs[chosenId - 1].pop_task()
-    task.offset = f.jobs[chosenId - 1].currentTime
-    jobtime = f.give_task(task)
-    f.jobs[chosenId - 1].currentTime += task.duration
-    if len(f.jobs[chosenId - 1].taskQueue) == 0:
-        available.pop(available.index(chosenId))
+    while True:
+        if len(available) == 0:
+            break
+        chosenId = choice(available)
+        task = factories[-1].jobs[chosenId - 1].pop_task()
+        jobtime = factories[-1].give_task(task, factories[-1].jobs[chosenId - 1])
+        factories[-1].jobs[chosenId - 1].currentTime = jobtime
+        if len(factories[-1].jobs[chosenId - 1].taskQueue) == 0:
+            available.pop(available.index(chosenId))
+    times = [m.executionTime for k, m in factories[-1].machines.items()]
 
-maxtime = [m.executionTime for k, m in f.machines.items()]
-print(maxtime)
+    return max(times)
+
+solutions = []
+
+for i in range(1):
+    solutions.append(solution())
+
+print(min(solutions))

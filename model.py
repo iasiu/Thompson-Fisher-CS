@@ -1,12 +1,12 @@
 import itertools
-from data import PRINTINFO
+from data import PRINTINFO, jobsData
 
 class Solution:
     def createRandom(self):
         pass
 
 class Factory:
-    def __init__(self, jobsData):
+    def __init__(self):
         if PRINTINFO:
             print("Created Factory")
         self.machines = {}
@@ -42,12 +42,11 @@ class Factory:
         for jobId, job in enumerate(self.jobsData):
             for taskId, operation in enumerate(job):
                 self.tasksToGive.append(Task(jobId, taskId, operation[0], operation[1]))
-        self.jobsData.clear()
     
-    def give_task(self, task):
+    def give_task(self, task, job):
         if task:
             if task.machineId in self.machinesIds:
-                return self.machines[task.machineId].add_task(task)
+                return self.machines[task.machineId].add_task(task, job)
         else:
             return None
     
@@ -70,13 +69,13 @@ class Machine:
         if PRINTINFO:
             print("Created {}".format(str(self)))
     
-    def add_task(self, task):
-        task.startTime = self.executionTime + task.offset
+    def add_task(self, task, job):
+        task.startTime = self.executionTime if self.executionTime > job.currentTime else job.currentTime
         self.tasks.append(task)
         self.executionTime = task.startTime + task.duration
         if PRINTINFO:
             print("Added {} to {}, start at-{}".format(str(task), str(self), task.startTime))
-        return task.startTime + task.duration
+        return self.executionTime
     
     def add_tasks_list(self, tasksList):
         for task in tasksList:
@@ -119,7 +118,6 @@ class Task:
         self.machineId = machineId
         self.duration = duration
         self.startTime = 0
-        self.offset = 0
         if PRINTINFO:
             print("Created {}".format(str(self)))
     
